@@ -1,137 +1,98 @@
-# nosql-challenge
-nosql-challenge
-For the ETL mini project, you will work with a partner to practice building an ETL pipeline using Python, Pandas, and either Python dictionary methods or regular expressions to extract and transform the data. After you transform the data, you'll create four CSV files and use the CSV file data to create an ERD and a table schema. Finally, you’ll upload the CSV file data into a Postgres database.
+# UK Food Hygiene Ratings Analysis
 
-Since this is a one-week project, make sure that you have done at least half of your project before the third day of class to stay on track.
+## Overview
 
-Although you and your partner will divide the work, it’s essential to collaborate and communicate while working on different parts of the project. Be sure to check in with your partner regularly and offer support.
+The UK Food Standards Agency evaluates various establishments across the United Kingdom and assigns them food hygiene ratings. In this challenge, we will evaluate some of the ratings data to help the editors of Eat Safe, Love magazine decide where to focus future articles. This challenge is divided into three parts: database setup, database update, and exploratory analysis.
 
-Before You Begin
-Have one member of your group create a new repository, named Crowdfunding_ETL, for this project. Add your partner as a collaborator. Do not add this project to an existing repository.
+## Challenge Structure
 
-Clone the new repository to your computer.
+### 1. Database and Jupyter Notebook Setup
 
-Have one person rename the ETL_Mini_Project_starter_code.ipynb file with the first name initial and last name of each member of the group, for example, ETL_Mini_Project_NRomanoff_JSmith.ipynb. Then, add this Jupyter notebook file and the Resources folder containing the crowdfunding.xlsx and the contacts.xlsx files to your repository.
+**File**: `NoSQL_setup_starter.ipynb`
 
-Push the changes to GitHub.
+1. **Import Data**:
+   - Import data from `establishments.json` into a MongoDB database named `uk_food` and a collection named `establishments`.
+   - Copy the import command used in the terminal to a markdown cell in the notebook.
 
-Have your partner pull the changes, so both of you have the same notebook available on your computer.
+2. **Library Imports**:
+   - Import the necessary libraries: PyMongo and Pretty Print (`pprint`).
 
-As you work through the project deliverables, you may find it helpful to break up the work across other notebooks that you each work on individually. However, once complete, please combine all the subsections back into the final ETL_Mini_Project notebook.
+3. **Create MongoDB Client**:
+   - Create an instance of the MongoDB client.
 
-Instructions
-The instructions for this mini project are divided into the following subsections:
+4. **Confirm Database and Data**:
+   - List databases to confirm `uk_food` is listed.
+   - List collections to ensure `establishments` is present.
+   - Display one document from the `establishments` collection using `find_one` and `pprint`.
+   - Assign the `establishments` collection to a variable for further use.
 
-Create the Category and Subcategory DataFrames
-Create the Campaign DataFrame
-Create the Contacts DataFrame
-Create the Crowdfunding Database
-Create the Category and Subcategory DataFrames
-Extract and transform the crowdfunding.xlsx Excel data to create a category DataFrame that has the following columns:
+### 2. Update the Database
 
-A "category_id" column that has entries going sequentially from "cat1" to "catn", where n is the number of unique categories
+**File**: `NoSQL_setup_starter.ipynb`
 
-A "category" column that contains only the category titles
+1. **Add New Restaurant**:
+   - Add a new halal restaurant in Greenwich to the database with the following information:
+    ```json
+    {
+        "BusinessName": "Penang Flavours",
+        "BusinessType": "Restaurant/Cafe/Canteen",
+        "BusinessTypeID": "",
+        "AddressLine1": "Penang Flavours",
+        "AddressLine2": "146A Plumstead Rd",
+        "AddressLine3": "London",
+        "AddressLine4": "",
+        "PostCode": "SE18 7DY",
+        "Phone": "",
+        "LocalAuthorityCode": "511",
+        "LocalAuthorityName": "Greenwich",
+        "LocalAuthorityWebSite": "http://www.royalgreenwich.gov.uk",
+        "LocalAuthorityEmailAddress": "health@royalgreenwich.gov.uk",
+        "scores": {
+            "Hygiene": "",
+            "Structural": "",
+            "ConfidenceInManagement": ""
+        },
+        "SchemeType": "FHRS",
+        "geocode": {
+            "longitude": "0.08384000",
+            "latitude": "51.49014200"
+        },
+        "RightToReply": "",
+        "Distance": 4623.9723280747176,
+        "NewRatingPending": True
+    }
+    ```
 
-The following image shows this category DataFrame:
+2. **Update Restaurant Information**:
+   - Find the `BusinessTypeID` for "Restaurant/Cafe/Canteen".
+   - Update the new restaurant with the found `BusinessTypeID`.
 
-category DataFrame
+3. **Remove Dover Establishments**:
+   - Check the number of documents with the Dover Local Authority.
+   - Remove establishments within the Dover Local Authority.
+   - Confirm the removal.
 
-Export the category DataFrame as category.csv and save it to your GitHub repository.
+4. **Convert Data Types**:
+   - Convert latitude and longitude to decimal numbers using `update_many`.
+   - Convert `RatingValue` to integer numbers using `update_many`.
 
-Extract and transform the crowdfunding.xlsx Excel data to create a subcategory DataFrame that has the following columns:
+### 3. Exploratory Analysis
 
-A "subcategory_id" column that has entries going sequentially from "subcat1" to "subcatn", where n is the number of unique subcategories
+**File**: `NoSQL_analysis_starter.ipynb`
 
-A "subcategory" column that contains only the subcategory titles
+Use the following questions to explore the database:
 
-The following image shows this subcategory DataFrame:
+1. **Hygiene Score of 20**:
+   - Find establishments with a hygiene score equal to 20.
 
-subcategory DataFrame
+2. **RatingValue >= 4 in London**:
+   - Find establishments in London with a `RatingValue` greater than or equal to 4.
 
-Export the subcategory DataFrame as subcategory.csv and save it to your GitHub repository.
+3. **Top 5 Establishments near Penang Flavours**:
+   - Find the top 5 establishments with a `RatingValue` of 5, sorted by lowest hygiene score, nearest to "Penang Flavours".
 
-Create the Campaign DataFrame
-Extract and transform the crowdfunding.xlsx Excel data to create a campaign DataFrame has the following columns:
+4. **Hygiene Score of 0 by Local Authority**:
+   - Find the number of establishments in each Local Authority area with a hygiene score of 0. Sort the results from highest to lowest and display the top ten.
 
-The "cf_id" column
 
-The "contact_id" column
-
-The "company_name" column
-
-The "blurb" column, renamed to "description"
-
-The "goal" column, converted to the float data type
-
-The "pledged" column, converted to the float data type
-
-The "outcome" column
-
-The "backers_count" column
-
-The "country" column
-
-The "currency" column
-
-The "launched_at" column, renamed to "launch_date" and with the UTC times converted to the datetime format
-
-The "deadline" column, renamed to "end_date" and with the UTC times converted to the datetime format
-
-The "category_id" column, with unique identification numbers matching those in the "category_id" column of the category DataFrame
-
-The "subcategory_id" column, with the unique identification numbers matching those in the "subcategory_id" column of the subcategory DataFrame
-
-The following image shows this campaign DataFrame:
-
-campaign DataFrame
-
-Export the campaign DataFrame as campaign.csv and save it to your GitHub repository.
-
-Create the Contacts DataFrame
-Choose one of the following two options for extracting and transforming the data from the contacts.xlsx Excel data:
-
-Option 1: Use Python dictionary methods.
-
-Option 2: Use regular expressions.
-
-If you chose Option 1, complete the following steps:
-
-Import the contacts.xlsx file into a DataFrame.
-Iterate through the DataFrame, converting each row to a dictionary.
-Iterate through each dictionary, doing the following:
-Extract the dictionary values from the keys by using a Python list comprehension.
-Add the values for each row to a new list.
-Create a new DataFrame that contains the extracted data.
-Split each "name" column value into a first and last name, and place each in a new column.
-Clean and export the DataFrame as contacts.csv and save it to your GitHub repository.
-If you chose Option 2, complete the following steps:
-
-Import the contacts.xlsx file into a DataFrame.
-Extract the "contact_id", "name", and "email" columns by using regular expressions.
-Create a new DataFrame with the extracted data.
-Convert the "contact_id" column to the integer type.
-Split each "name" column value into a first and a last name, and place each in a new column.
-Clean and then export the DataFrame as contacts.csv and save it to your GitHub repository.
-Check that your final DataFrame resembles the one in the following image:
-
-final contact DataFrame
-
-Create the Crowdfunding Database
-Inspect the four CSV files, and then sketch an ERD of the tables by using QuickDBDLinks to an external site..
-
-Use the information from the ERD to create a table schema for each CSV file.
-
-Note: Remember to specify the data types, primary keys, foreign keys, and other constraints.
-
-Save the database schema as a Postgres file named crowdfunding_db_schema.sql, and save it to your GitHub repository.
-
-Create a new Postgres database, named crowdfunding_db.
-
-Using the database schema, create the tables in the correct order to handle the foreign keys.
-
-Verify the table creation by running a SELECT statement for each table.
-
-Import each CSV file into its corresponding SQL table.
-
-Verify that each table has the correct data by running a SELECT statement for each.
+---
